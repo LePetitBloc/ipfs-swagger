@@ -19,13 +19,12 @@ IPFS OpenAPI is under the [MIT License](LICENSE.md).
 
 ## Donation
 
-If you have not already understand, we love cryptocurrency. It's possible to make a donation
-for this work at the following addresses:
+We love cryptocurrencies, consider making a donation:
 
 | Currency         | Address                                    |
 | ---------------- | ------------------------------------------ |
 | Bitcoin          | 14VRBrDZ47HR1pWjmAnyC5CJCXDkhLeANb         |
-| Ethereum         | 0x1accf4c2bd6010100a2aeac36f336fb963a1716a |
+| Ethereum         | 0x1accf4c2bd6010100a2aeac36f336fb963a1716a |
 | Ethereum Classic | 0x3b33bdcc70f06dad7068594a0cd8fbfd7b203aae |
 | Litecoin         | LdH6Sbq5M9p6dqG7GaRvBjoCqJ2CHnz9wr         |
 | Dash             | XuPyN4Ns12qaMKzUjffzeKrCjCL4XYwUCY         |
