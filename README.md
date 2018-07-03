@@ -44,11 +44,6 @@ See the [CONTRIBUTING](CONTRIBUTING.md) file.
 
 See the [SUPPORT](SUPPORT.md) file.
 
-## Templates
-
-You should review templates for issue/(pull|merge) requests for Github and Gitlab. Feel free to
-update them and, if you work with gitlab, add others templates.
-
 ## Credits
 
 - README, CONTRIBUTING and LICENSE are heavily inspired by [project-template](https://github.com/mnapoli/project-template)
