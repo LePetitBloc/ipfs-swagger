@@ -1,0 +1,542 @@
+swagger: "2.0"
+info:
+  version: "0.4.11-dev"
+  title: "IPFS"
+  contact:
+    email: "ipfs-swagger@bonjour.lepetitbloc.net"
+  license:
+    name: "MIT"
+    url: "https://opensource.org/licenses/MIT"
+  description: >
+    This is the HTTP API specification for IPFS.
+
+    IPFS HTTP API is an RPC API which should work across different IPFS implementations.
+
+    ### Getting started
+
+    #### Alignment with CLI Commands
+
+    Every command usable from the CLI is also available through the HTTP API. For example:
+
+    ```
+      > ipfs swarm peers
+      /ip4/104.131.131.82/tcp/4001/ipfs/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ
+      /ip4/104.236.151.122/tcp/4001/ipfs/QmSoLju6m7xTh3DuokvT3886QRYqxAzb1kShaanJgW36yx
+      /ip4/104.236.176.52/tcp/4001/ipfs/QmSoLnSGccFuZQJzRadHn95W2CrSFmZuTdDWP8HXaHca9z
+
+      > curl http://127.0.0.1:5001/api/v0/swarm/peers
+      {
+        "Strings": [
+          "/ip4/104.131.131.82/tcp/4001/ipfs/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
+          "/ip4/104.236.151.122/tcp/4001/ipfs/QmSoLju6m7xTh3DuokvT3886QRYqxAzb1kShaanJgW36yx",
+          "/ip4/104.236.176.52/tcp/4001/ipfs/QmSoLnSGccFuZQJzRadHn95W2CrSFmZuTdDWP8HXaHca9z",
+        ]
+      }
+    ```
+
+    #### Arguments
+
+    Arguments are added through the special query string key “arg”:
+
+    ```
+      > curl "http://127.0.0.1:5001/api/v0/swarm/disconnect?arg=/ip4/54.93.113.247/tcp/48131/ipfs/QmUDS3nsBD1X4XK5Jo836fed7SErTyTuQzRqWaiQAyBYMP"
+      {
+        "Strings": [
+          "disconnect QmUDS3nsBD1X4XK5Jo836fed7SErTyTuQzRqWaiQAyBYMP success",
+        ]
+      }
+    ```
+
+    Note that it can be used multiple times to signify multiple arguments.
+
+    #### Flags
+
+    Flags are added through the query string. For example, the --encoding=json flag is the &encoding=json query parameter below:
+
+
+    ```
+      > curl "http://127.0.0.1:5001/api/v0/object/get?arg=QmaaqrHyAQm7gALkRW8DcfGX3u8q9rWKnxEMmf7m9z515w&encoding=json"
+      {
+        "Links": [
+          {
+            "Name": "index.html",
+            "Hash": "QmYftndCvcEiuSZRX7njywX2AGSeHY2ASa7VryCq1mKwEw",
+            "Size": 1700
+          },
+          {
+            "Name": "static",
+            "Hash": "QmdtWFiasJeh2ymW3TD2cLHYxn1ryTuWoNpwieFyJriGTS",
+            "Size": 2428803
+          }
+        ],
+        "Data": "CAE="
+      }
+    ```
+
+host: "127.0.0.1:5001"
+basePath: "/api/v0"
+
+schemes:
+- "http"
+
+paths:
+  /add:
+    post:
+      summary: "Add a file or directory to ipfs."
+      description: "Argument “path” is of file type. This endpoint expects a file in the body of the request as ‘multipart/form-data’."
+      externalDocs:
+        url: "https://ipfs.io/docs/api/#apiv0add"
+      consumes:
+        - "multipart/form-data"
+      parameters:
+        - name: "file"
+          description: "The path to a file to be added to ipfs."
+          type: "file"
+          in: "formData"
+          required: true
+        - name: "recursive"
+          description: "Add directory paths recursively."
+          type: "boolean"
+          in: "query"
+          required: false
+          default: false
+        - name: "quiet"
+          description: "Write minimal output."
+          type: "boolean"
+          in: "query"
+        - name: "quieter"
+          description: "Write only final hash."
+          type: "boolean"
+          in: "query"
+          required: false
+        - name: "silent"
+          description: "Write no output."
+          type: "boolean"
+          in: "query"
+          required: false
+        - name: "progress"
+          description: "Stream progress data."
+          type: "boolean"
+          in: "query"
+          required: false
+        - name: "trickle"
+          description: "Use trickle-dag format for dag generation."
+          type: "boolean"
+          in: "query"
+          required: false
+        - name: "only-hash"
+          description: "Only chunk and hash - do not write to disk."
+          type: "boolean"
+          in: "query"
+          required: false
+        - name: "hidden"
+          description: "Include files that are hidden. Only takes effect on recursive add."
+          type: "boolean"
+          in: "query"
+          required: false
+        - name: "chunker"
+          description: "Chunking algorithm to use."
+          type: "string"
+          in: "query"
+          required: false
+        - name: "pin"
+          description: "Pin this object when adding."
+          type: "boolean"
+          in: "query"
+          required: false
+          default: true
+        - name: "raw-leaves"
+          description: "Use raw blocks for leaf nodes. (experimental)."
+          type: "boolean"
+          in: "query"
+          required: false
+        - name: "nocopy"
+          description: "Add the file using filestore. (experimental)."
+          type: "boolean"
+          in: "query"
+          required: false
+        - name: "fscache"
+          description: "Check the filestore for pre-existing blocks. (experimental)."
+          type: "boolean"
+          in: "query"
+          required: false
+        - name: "cid-version"
+          description: "Cid version. Non-zero value will change default of ‘raw-leaves’ to true. (experimental)."
+          type: "integer"
+          in: "query"
+          required: false
+          default: "0"
+        - name: "hash"
+          description: "Hash function to use. Will set Cid version to 1 if used. (experimental)."
+          type: "string"
+          in: "query"
+          required: false
+          default: "sha2-256"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/File"
+
+  /bitswap/ledger:
+    get:
+      summary: "Show the current ledger for a peer."
+      externalDocs:
+        url: "https://ipfs.io/docs/api/#apiv0bitswapledger"
+      parameters:
+        - name: "arg"
+          description: "The PeerID (B58) of the ledger to inspect."
+          type: "string"
+          in: "query"
+          required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Ledger"
+
+  /bitswap/reprovide:
+    get:
+      summary: "Trigger reprovider."
+      externalDocs:
+        url: "https://ipfs.io/docs/api/#apiv0bitswapreprovide"
+      responses:
+        200:
+          description: "This endpoint returns a `text/plain` response body."
+
+  /bitswap/stat:
+    get:
+      summary: "Show some diagnostic information on the bitswap agent."
+      externalDocs:
+        url: "https://ipfs.io/docs/api/#apiv0bitswapstat"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Bitswap"
+
+  /bitswap/unwant:
+    get:
+      summary: "Remove a given block from your wantlist."
+      externalDocs:
+        url: "https://ipfs.io/docs/api/#apiv0bitswapunwant"
+      parameters:
+        - name: "arg"
+          description: "Key(s) to remove from your wantlist."
+          type: "string"
+          in: "query"
+          required: true
+      responses:
+        200:
+          description: "This endpoint returns a `text/plain` response body."
+
+  /bitswap/wantlist:
+    get:
+      summary: "Show blocks currently on the wantlist."
+      externalDocs:
+        url: "https://ipfs.io/docs/api/#apiv0bitswapwantlist"
+      parameters:
+        - name: "peer"
+          description: "Specify which peer to show wantlist for. "
+          type: "string"
+          in: "query"
+          required: false
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Keys"
+
+  /block/get:
+    get:
+      summary: "Get a raw IPFS block."
+      externalDocs:
+        url: "https://ipfs.io/docs/api/#apiv0blockget"
+      parameters:
+        - name: "arg"
+          description: "The base58 multihash of an existing block to get."
+          type: "string"
+          in: "query"
+          required: true
+      responses:
+        200:
+          description: "This endpoint returns a `text/plain` response body."
+
+  /block/put:
+    post:
+      summary: "Store input as an IPFS block."
+      externalDocs:
+        url: "https://ipfs.io/docs/api/#apiv0blockput"
+      consumes:
+        - "multipart/form-data"
+      parameters:
+        - name: "file"
+          description: "The data to be stored as an IPFS block."
+          type: "file"
+          in: "formData"
+          required: true
+        - name: "format"
+          description: "cid format for blocks to be created with."
+          type: "string"
+          in: "query"
+          required: false
+          default: "v0"
+        - name: "mhtype"
+          description: "multihash hash function."
+          type: "string"
+          in: "query"
+          required: false
+          default: "sha2-256"
+        - name: "mhlen"
+          description: "multihash hash length."
+          type: "integer"
+          in: "query"
+          required: false
+          default: "-1"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Block"
+
+  /block/rm:
+    get:
+      summary: "Remove IPFS block(s)."
+      externalDocs:
+        url: "https://ipfs.io/docs/api/#apiv0blockrm"
+      parameters:
+        - name: "arg"
+          description: "Bash58 encoded multihash of block(s) to remove."
+          type: "string"
+          in: "query"
+          required: true
+        - name: "force"
+          description: "Ignore nonexistent blocks."
+          type: "boolean"
+          in: "query"
+          required: false
+          default: false
+        - name: "quiet"
+          description: "Write minimal output."
+          type: "boolean"
+          in: "query"
+          required: false
+          default: false
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/BlockHash"
+
+  /block/stat:
+    get:
+      summary: "Print information of a raw IPFS block."
+      externalDocs:
+        url: "https://ipfs.io/docs/api/#apiv0blockstat"
+      parameters:
+        - name: "arg"
+          description: "Bash58 encoded multihash of block(s) to remove."
+          type: "string"
+          in: "query"
+          required: true
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Block"
+
+  /bootstrap/add/default:
+    get:
+      summary: "Add default peers to the bootstrap list."
+      externalDocs:
+        url: "https://ipfs.io/docs/api/#apiv0bootstrapadddefault"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Peers"
+
+  /bootstrap/list:
+    get:
+      summary: "Show peers in the bootstrap list."
+      externalDocs:
+        url: "https://ipfs.io/docs/api/#apiv0bootstraplist"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Peers"
+
+  /bootstrap/rm/all:
+    get:
+      summary: "Remove all peers from the bootstrap list."
+      externalDocs:
+        url: "https://ipfs.io/docs/api/#apiv0bootstraprmall"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Peers"
+
+  /cat:
+    get:
+      summary: "Show IPFS object data."
+      externalDocs:
+        url: "https://ipfs.io/docs/api/#apiv0cat"
+      parameters:
+        - name: "arg"
+          description: "The path to the IPFS object(s) to be outputted."
+          type: "string"
+          in: "query"
+          required: true
+      responses:
+        200:
+          description: "This endpoint returns a `text/plain` response body."
+
+  /commands:
+    get:
+      summary: "List all available commands."
+      externalDocs:
+        url: "https://ipfs.io/docs/api/#apiv0commands"
+      parameters:
+        - name: "flags"
+          description: "Show command flags."
+          type: "string"
+          in: "query"
+          required: false
+          default: false
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Command"
+
+  /config/edit:
+    get:
+      summary: "Open the config file for editing in $EDITOR."
+      externalDocs:
+        url: "https://ipfs.io/docs/api/#apiv0commands"
+      responses:
+        200:
+          description: "This endpoint returns a `text/plain` response body."
+
+definitions:
+  File:
+    type: "object"
+    properties:
+      Name:
+        type: "string"
+      Hash:
+        type: "string"
+      Bytes:
+        type: "integer"
+        format: "int64"
+      Size:
+        type: "string"
+
+  Ledger:
+    type: "object"
+    properties:
+      Peer:
+        $ref: "#/definitions/Peer"
+      Value:
+        type: "number"
+        format: "float64"
+      Sent:
+        type: "integer"
+        format: "int64"
+      Recv:
+        type: "integer"
+        format: "int64"
+      Exchanged:
+        type: "integer"
+        format: "int64"
+
+  Bitswap:
+    type: "object"
+    properties:
+      ProvideBufLen:
+        type: "integer"
+      Wantlist:
+        $ref: "#/definitions/Wantlist"
+      Peers:
+        $ref: "#/definitions/Peers"
+      BlocksReceived:
+        type: "integer"
+        format: "int64"
+      DataReceived:
+        type: "integer"
+        format: "int64"
+      BlocksSent:
+        type: "integer"
+        format: "int64"
+      DataSent:
+        type: "integer"
+        format: "int64"
+      DupBlksReceived:
+        type: "integer"
+        format: "int64"
+      DupDataReceived:
+        type: "integer"
+        format: "int64"
+
+  Wantlist:
+    type: "array"
+    items:
+      type: "string"
+
+  Peers:
+    type: "array"
+    items:
+      $ref: "#/definitions/Peer"
+
+  Peer:
+    type: "string"
+
+  Keys:
+    type: "array"
+    items:
+      $ref: "#/definitions/Key"
+
+  Key:
+    type: "string"
+
+  Block:
+    type: "object"
+    properties:
+      Key:
+        $ref: "#/definitions/Key"
+      Size:
+        type: "integer"
+
+  BlockHash:
+    type: "object"
+    properties:
+      Hash:
+        type: "string"
+      Error:
+        type: "string"
+
+  Command:
+    type: "object"
+    required:
+      - "Name"
+      - "Options"
+    properties:
+      Name:
+        type: "string"
+      Options:
+        type: "object"
+        items:
+          $ref: "#/definitions/Names"
+      Subcommands:
+        $ref: "#/definitions/Command"
+
+  Names:
+    type: "array"
+    items:
+      type: "string"
+
+externalDocs:
+  description: "Official IPFS API documentation"
+  url: "https://ipfs.io/docs/api/"
