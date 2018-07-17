@@ -1,0 +1,46 @@
+version: '3.2'
+
+services:
+  editor:
+    image: swaggerapi/swagger-editor
+    ports:
+      -  8383:8080
+    links:
+      - ipfs
+    depends_on:
+      - ipfs
+    volumes:
+      - ./docker/editor/editor-config.js:/usr/share/nginx/html/dist/editor-config.js
+      - ./docker/editor/index.html:/usr/share/nginx/html/index.html
+      - ./:/usr/share/nginx/html/data:rw
+      
+  ipfs:
+    image: jbenet/go-ipfs
+    volumes:
+      - ./docker/ipfs/start_ipfs.sh:/usr/local/bin/start_ipfs
+      - ./docker/ipfs/config_ipfs.sh:/usr/local/bin/config_ipfs
+    ports: 
+      - 5001:5001
+      - 4001:4001
+      - 8080:8080
+    expose:
+      - 5001
+      - 4001
+      - 8080
+    links:
+      - browsersync
+    depends_on:
+      - browsersync
+
+  browsersync:
+    build:
+      context: docker/browsersync
+    ports:
+      - 3131:3131
+      - 3000:3000
+    expose:
+      - 3131
+      - 3000
+    working_dir: /data/browsersynced
+    volumes:
+       - ./:/data/browsersynced:rw

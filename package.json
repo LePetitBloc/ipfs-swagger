@@ -1,0 +1,31 @@
+{
+  "name": "ipfs-swagger",
+  "version": "1.0.0",
+  "description": "**IPFS** Rest API swagger specification document in Yml and Json (OpenAPI).",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "browser-sync start --config bs-config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LePetitBloc/ipfs-swagger.git"
+  },
+  "keywords": [
+    "ipfs",
+    "swagger",
+    "swagger-editor",
+    "docker"
+  ],
+  "author": "JulesAaelio",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LePetitBloc/ipfs-swagger/issues"
+  },
+  "homepage": "https://github.com/LePetitBloc/ipfs-swagger#readme",
+  "devDependencies": {
+    "browser-sync": "^2.24.5"
+  }
+}
