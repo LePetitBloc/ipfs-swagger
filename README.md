@@ -13,6 +13,13 @@ Swagger (v2) and OpenAPI (v3) are specification for describing an API. Writing a
 
 You can import the yaml/json file in the [Swagger editor](http://editor.swagger.io/) and generate a client for any [supported languages](https://swagger.io/open-source-integrations/).
 
+#Development 
+```
+docker-compose up -d --build
+```
+
+Connect to [http://localhost:8383]([http://localhost:8383])
+
 ## License
 
 IPFS OpenAPI is under the [MIT License](LICENSE.md).
