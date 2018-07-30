@@ -18,7 +18,7 @@ You can import the yaml/json file in the [Swagger editor](http://editor.swagger.
 docker-compose up -d --build
 ```
 
-Connect to [http://localhost:8383]([http://localhost:8383])
+Connect to [http://localhost:8888]([http://localhost:8383])
 
 ## License
 
