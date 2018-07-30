@@ -1,0 +1,25 @@
+version: '3.2'
+
+services:
+  ipfs:
+    image: jbenet/go-ipfs
+    volumes:
+      - ./docker/ipfs/start_ipfs.sh:/usr/local/bin/start_ipfs
+      - ./docker/ipfs/config_ipfs.sh:/usr/local/bin/config_ipfs
+    ports: 
+      - 5001:5001
+      - 4001:4001
+      - 8080:8080
+    expose:
+      - 5001
+      - 4001
+      - 8080
+      
+  editor-synced:
+      image: lepetitbloc/swagger-editor:latest
+      ports:
+        - 8888:8080
+        - 3000:3000
+        - 3001:3001
+      volumes:
+        - ./spec:/usr/share/nginx/html/data/
